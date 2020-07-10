@@ -1,3 +1,5 @@
+[RU](https://github.com/Illumaria/weight-spectrum/blob/master/docs/problem.md) | [EN](https://github.com/Illumaria/weight-spectrum/blob/master/docs/problem.en.md)
+
 # Вычисление весового спектра линейного подпространства
 
 1. Назовём **вектором** строку битов (значения `0` или `1`) фиксированной длины `N`. Для заданного значения `N` возможно максимум ![powN](https://latex.codecogs.com/png.latex?%5Cinline%20%5Clarge%202%5E%7BN%7D) различных векторов.
