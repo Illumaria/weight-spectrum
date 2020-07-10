@@ -1,9 +1,8 @@
 # Вычисление весового спектра линейного подпространства
 
-1. Назовём **вектором** строку битов (значения `0` или `1`) фиксированной длины `N`. Для заданного значения `N` возможно максимум ![2powN](http://www.sciweavers.org/tex2img.php?eq=2%5E%7BN%7D&bc=Transparent&fc=Black&im=png&fs=12&ff=arev&edit=0) различных векторов.
+1. Назовём **вектором** строку битов (значения `0` или `1`) фиксированной длины `N`. Для заданного значения `N` возможно максимум ![powN](https://bit.ly/2ZhRVwG) различных векторов.
 2. Введём операцию **сложения по модулю 2** векторов (операция `xor`), которая для двух векторов `a` и `b` получает вектор `a + b` той же длины `N`.
-3. Пусть задано множество ![A](http://www.sciweavers.org/tex2img.php?eq=A%20%3D%20%5C%7B%20a_%7Bi%7D%20%7C%20i%20%5Cin%201..K%20%20%5C%7D&bc=Transparent&fc=Black&im=png&fs=12&ff=arev&edit=0) из ![K](http://www.sciweavers.org/tex2img.php?eq=0%20%20%5Cleq%20K%20%20%5Cleq%20%202%5E%7BN%7D&bc=Transparent&fc=Black&im=png&fs=12&ff=arev&edit=0) векторов. Назовём его порождающим: при помощи сложения векторов ![a_i](http://www.sciweavers.org/tex2img.php?eq=a_%7Bi%7D&bc=Transparent&fc=Black&im=png&fs=12&ff=arev&edit=0) из множества `A` можно получить ![2powK](http://www.sciweavers.org/tex2img.php?eq=%202%5E%7BK%7D%20&bc=Transparent&fc=Black&im=png&fs=12&ff=arev&edit=0) векторов вида ![vectors](http://www.sciweavers.org/tex2img.php?eq=%5Csum_%7Bi%3D1%7D%5EK%20%7B%20%5Cbeta_i%20a_i%7D&bc=Transparent&fc=Black&im=png&fs=12&ff=arev&edit=0)
-, где коэффициент ![beta_i](http://www.sciweavers.org/tex2img.php?eq=%5Cbeta_i&bc=Transparent&fc=Black&im=png&fs=12&ff=arev&edit=0) равен либо `0`, либо `1`.
+3. Пусть задано множество ![A](https://bit.ly/2DmAbaI) из ![K](https://bit.ly/2W41nlb) векторов. Назовём его порождающим: при помощи сложения векторов ![a_i](https://bit.ly/2W5OHdx) из множества `A` можно получить ![powK](https://bit.ly/2OaTiXF) векторов вида ![vectors](https://bit.ly/2ZUVWWP), где коэффициент ![beta_i](https://bit.ly/2DtkMWg) равен либо `0`, либо `1`.
 4. Весом вектора назовём количество единичных (ненулевых) битов в векторе. Таким образом, вес — это натуральное число от `0` до `N`.
 
 Необходимо для заданных порождающего множества векторов и числа `N` построить гистограмму (спектр) количества различных векторов по их весу.
