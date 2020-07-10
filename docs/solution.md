@@ -1,3 +1,5 @@
+[RU](https://github.com/Illumaria/weight-spectrum/blob/master/docs/solution.md) | [EN](https://github.com/Illumaria/weight-spectrum/blob/master/docs/solution.en.md)
+
 # Решение
 
 Для начала продемонстрируем решение задачи в лоб на простейшем примере, а заодно пронаблюдаем способы упрощения вычислений.
