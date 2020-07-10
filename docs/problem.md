@@ -31,3 +31,5 @@
 # Дополнительно
 1. По возможности использовать параллельные вычисления.
 2. Оценить ресурсы, указать ограничения реализации, возможные методы дальнейшей алгоритмической и программной оптимизации.
+
+[На главную](https://github.com/Illumaria/weight-spectrum/blob/master/README.md) | [Решение](https://github.com/Illumaria/weight-spectrum/blob/master/docs/solution.md)
