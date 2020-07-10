@@ -30,3 +30,5 @@ For the example of input data given above:
 # Optional
 1. Use parallel computations where applicable.
 2. Evaluate resources, specify limitations and possible methods for further algorithmic and software optimization.
+
+[Main page](https://github.com/Illumaria/weight-spectrum/blob/master/README.en.md) | [Solution](https://github.com/Illumaria/weight-spectrum/blob/master/docs/solution.en.md)
