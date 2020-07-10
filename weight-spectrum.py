@@ -166,12 +166,12 @@ def print_help():
           "  -  help            : print this help message and exit.\n" + \
           "\n" + \
           "Options and arguments:\n" + \
-          "  -  <input-file>    : a path to the input text file.\n" +\
-          "  -  [<output-file>] : (optional) a path to the output text file;\n" +\
-          "                       if not specified, \"./output.txt\" will be used.\n" + \
-          "  -  [<processes>]   : (optional) number of cores to use for parallel computing;\n" + \
-          "                       if not specified, maximum number of cores\n" + \
-          "                       will be used automatically.\n")
+          "  -  <input-file>     : a path to the input text file.\n" +\
+          "  -  [<output-file>]  : (optional) a path to the output text file;\n" +\
+          "                        if not specified, \"./output.txt\" will be used.\n" + \
+          "  -  [-j <processes>] : (optional) number of cores to use for parallel computing;\n" + \
+          "                        if not specified, maximum number of cores\n" + \
+          "                        will be used automatically.\n")
 
 def main(input_file, output_file, cores):
     vectors, vector_num, vector_len = read(input_file)
