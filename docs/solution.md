@@ -78,3 +78,5 @@ weight[3] = weight[2] * (3 - 3) / 3 = 0
 Все полученные веса по-прежнему необходимо умножить на 2 столько раз, сколько линейно зависимых векторов было удалено при получении базиса.
 
 После нахождения базиса и его размера (нового количества векторов) решение соответствует представленному в [этой статье](https://habr.com/ru/company/wolfram/blog/336350/).
+
+[На главную](https://github.com/Illumaria/weight-spectrum/blob/master/README.md) | [Постановка задачи](https://github.com/Illumaria/weight-spectrum/blob/master/docs/problem.md)
