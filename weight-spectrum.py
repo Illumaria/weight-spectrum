@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys
 from math import log2
 from multiprocessing import Process, Manager, cpu_count
