@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 # Read the file as a list of integers (vectors)
 def read(path):
-    with open(path, "r") as fin:
+    with open(path, "r", encoding='utf-8') as fin:
         vectors = [x.rstrip() for x in fin.readlines()]
         vector_len = len(vectors[0])
         vector_num = len(vectors)
@@ -179,7 +179,7 @@ def process(basis, rank, vector_len_wz, vector_len, vector_num, cores):
 
 # Write spectrum to the file
 def write(spectrum, path):
-    with open(path, "w") as fout:
+    with open(path, "w", encoding='utf-8') as fout:
         for i, elem in enumerate(spectrum[:-1]):
             fout.write("{}\t{}\n".format(i, elem))
         else:
