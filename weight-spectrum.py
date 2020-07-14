@@ -3,6 +3,7 @@ from math import log2
 from multiprocessing import Process, Manager, cpu_count
 from tqdm import tqdm
 
+
 # Read the file as a list of integers (vectors)
 def read(path):
     with open(path, "r") as fin:
@@ -12,6 +13,7 @@ def read(path):
         vectors = list(map(lambda x: int(x, 2), vectors))
         return (vectors, vector_num, vector_len)
 
+
 # Get positions of zeros in a single vector
 def get_zeros_pos(vector):
     zeros_pos = []
@@ -20,6 +22,7 @@ def get_zeros_pos(vector):
     zeros_pos = [i for i, j in enumerate(vector_str[::-1]) if j == '0']
     new_vector_len = vector_len - len(zeros_pos)
     return (zeros_pos, new_vector_len)
+
 
 # Delete zeros at given indexes from a single vector
 def delete(vector, zeros_pos):
@@ -31,6 +34,7 @@ def delete(vector, zeros_pos):
     vector = int(bin_vector, 2)
     return vector
 
+
 # Delete common zeros from vectors
 def delete_zeros(vectors, vector_len):
     vec_sum = 0
@@ -39,6 +43,7 @@ def delete_zeros(vectors, vector_len):
     zeros_pos, new_vector_len = get_zeros_pos(vec_sum)
     vectors = list(map(lambda x: delete(x, zeros_pos), vectors))
     return (vectors, new_vector_len)
+
 
 # Get basis of vectors
 def get_basis(vectors, vector_num, vector_len):
@@ -57,6 +62,7 @@ def get_basis(vectors, vector_num, vector_len):
     rank = len(basis)
     return (basis, rank)
 
+
 # Split a range into (exactly or almost) equal parts
 def partition(start, end, cores):
     dn = round((end - start + 1) / cores)
@@ -65,6 +71,7 @@ def partition(start, end, cores):
     parts += [[dn * (i - 1), i * dn - 1] for i in range(2, cores)]
     parts += [[(cores - 1) * dn, end]]
     return parts
+
 
 # Count ones in a binary representation
 # of an integer number
@@ -83,9 +90,11 @@ def count_ones(int_num):
     # However, this solution turns out to be faster
     return bin(int_num).count('1')
 
+
 # Get the Gray code of a given index
 def gray_code(index):
     return index ^ (index // 2)
+
 
 # Get the spectrum of a basis
 def get_spectrum(basis, vector_len, bounds, total_spectrum, pbar=None):
@@ -121,6 +130,7 @@ def get_spectrum(basis, vector_len, bounds, total_spectrum, pbar=None):
     # to the main list
     total_spectrum.append(spectrum)
 
+
 # The main process of the script
 # for calculating spectrum
 def process(basis, rank, vector_len_wz, vector_len, vector_num, cores):
@@ -149,6 +159,7 @@ def process(basis, rank, vector_len_wz, vector_len, vector_num, cores):
     spectrum = [int(weight * 2**(vector_num - rank)) for weight in spectrum]
     return spectrum
 
+
 # Write spectrum to the file
 def write(spectrum, path):
     with open(path, "w") as fout:
@@ -156,6 +167,7 @@ def write(spectrum, path):
             fout.write("{}\t{}\n".format(i, elem))
         else:
             fout.write("{}\t{}".format(i+1, spectrum[-1]))
+
             
 def print_help():
     print("Usage:\n" + \
@@ -172,6 +184,7 @@ def print_help():
           "  -  [-j <processes>] : (optional) number of cores to use for parallel computing;\n" + \
           "                        if not specified, maximum number of cores\n" + \
           "                        will be used automatically.\n")
+
 
 def main(input_file, output_file, cores):
     vectors, vector_num, vector_len = read(input_file)
@@ -190,6 +203,7 @@ def main(input_file, output_file, cores):
     print("Writing output to {}...".format(output_file))
     write(spectrum, output_file)
     print("Done.")
+
 
 if __name__ == "__main__":
     args = sys.argv[1:]
@@ -232,6 +246,7 @@ if __name__ == "__main__":
             print("Wrong arguments or path(s).\nUse './weight-spectrum.py help' to get help on script usage.")
     else:
         print("Wrong arguments or path(s).\nUse './weight-spectrum.py help' to get help on script usage.")
+
 
 # in_24_32.txt: 1 loop, best of 3: 20.2 s per loop (-18.5% vs Git/Habr)
 # in_31_32.txt: 1233.2595570087433 seconds         (-15.7% vs Git/Habr)
