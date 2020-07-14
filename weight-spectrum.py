@@ -30,8 +30,8 @@ def delete(vector, zeros_pos):
     bin_len = len(bin_vector)
     for zero_pos in zeros_pos[::-1]:
         if zero_pos < bin_len:
-            bin_vector = bin_vector[:bin_len-zero_pos-1]
-                         + bin_vector[bin_len-zero_pos:]
+            bin_vector = (bin_vector[:bin_len-zero_pos-1]
+                         + bin_vector[bin_len-zero_pos:])
     vector = int(bin_vector, 2)
     return vector
 
