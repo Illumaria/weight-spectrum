@@ -30,7 +30,8 @@ def delete(vector, zeros_pos):
     bin_len = len(bin_vector)
     for zero_pos in zeros_pos[::-1]:
         if zero_pos < bin_len:
-            bin_vector = bin_vector[:bin_len-zero_pos-1] + bin_vector[bin_len-zero_pos:]
+            bin_vector = bin_vector[:bin_len-zero_pos-1]
+                         + bin_vector[bin_len-zero_pos:]
     vector = int(bin_vector, 2)
     return vector
 
@@ -148,9 +149,23 @@ def process(basis, rank, vector_len_wz, vector_len, vector_num, cores):
         with Manager() as manager:
             pbar = tqdm(total=parts[0][1])
             total_spectrum = manager.list()
+            
             processes = []
-            processes.append(Process(target=get_spectrum, args=(basis, vector_len, parts[0], total_spectrum, pbar)))
-            processes[1:] = [Process(target=get_spectrum, args=(basis, vector_len, part, total_spectrum)) for part in parts[1:]]
+            
+            processes.append(
+                Process(
+                    target=get_spectrum,
+                    args=(basis, vector_len, parts[0], total_spectrum, pbar)
+                    )
+                )
+            
+            processes[1:] = [
+                Process(
+                    target=get_spectrum,
+                    args=(basis, vector_len, part, total_spectrum)
+                    ) for part in parts[1:]
+                ]
+            
             for p in processes:
                 p.start()
             for p in processes:
@@ -170,20 +185,21 @@ def write(spectrum, path):
 
             
 def print_help():
-    print("Usage:\n" + \
-          "    $ ./weight-spectrum <input-file> [<output-file>] [<processes>]\n" + \
-          "    $ ./weight-spectrum help\n" + \
-          "\n" + \
-          "Commands:\n" + \
-          "  -  help            : print this help message and exit.\n" + \
-          "\n" + \
-          "Options and arguments:\n" + \
-          "  -  <input-file>     : a path to the input text file.\n" +\
-          "  -  [<output-file>]  : (optional) a path to the output text file;\n" +\
-          "                        if not specified, \"./output.txt\" will be used.\n" + \
-          "  -  [-j <processes>] : (optional) number of cores to use for parallel computing;\n" + \
-          "                        if not specified, maximum number of cores\n" + \
-          "                        will be used automatically.\n")
+    print("Usage:\n"
+          + "    $ ./weight-spectrum <input-file>"
+          + " [<output-file>] [<processes>]\n"
+          + "    $ ./weight-spectrum help\n\n"
+          + "Commands:\n"
+          + "  -  help             : print this help message"
+          + " and exit.\n\n"
+          + "Options and arguments:\n"
+          + "  -  <input-file>     : a path to the input text file.\n"
+          + "  -  [<output-file>]  : (optional) a path to the output"
+          + " text file;\nif not specified, \"./output.txt\""
+          + " will be used.\n"
+          + "  -  [-j <processes>] : (optional) number of cores to use"
+          + " for parallel computing;\nif not specified, maximum"
+          + " number of cores\nwill be used automatically.\n")
 
 
 def main(input_file, output_file, cores):
@@ -197,7 +213,8 @@ def main(input_file, output_file, cores):
     basis, rank = get_basis(vectors, vector_num, vector_len_wz)
     
     # Calculate spectrum
-    spectrum = process(basis, rank, vector_len_wz, vector_len, vector_num, cores)
+    spectrum = process(basis, rank, vector_len_wz,
+                       vector_len, vector_num, cores)
     
     # Write spectrum to the file
     print("Writing output to {}...".format(output_file))
@@ -208,44 +225,60 @@ def main(input_file, output_file, cores):
 if __name__ == "__main__":
     args = sys.argv[1:]
     if len(args) == 0:
-        print("No arguments specified.\nUse './weight-spectrum.py help' to get help on script usage.")
+        print("No arguments specified.\n"
+              + "Use './weight-spectrum.py help'"
+              + " to get help on script usage.")
     elif len(args) == 1:
         if (args[0] != 'help'):
             try:
                 main(args[0], "./output.txt", cpu_count())
             except:
-                print("Wrong path specified.\nUse './weight-spectrum.py help' to get help on script usage.")
+                print("Wrong path specified.\n"
+                      + "Use './weight-spectrum.py help'"
+                      + " to get help on script usage.")
         else:
             print_help()
     elif len(args) == 2:
         try:
             main(args[0], "./output.txt", cpu_count())
         except:
-            print("Wrong arguments or path(s).\nUse './weight-spectrum.py help' to get help on script usage.")
+            print("Wrong arguments or path(s).\n"
+                  + "Use './weight-spectrum.py help'"
+                  + " to get help on script usage.")
     elif len(args) == 3 and args[1] == "-j":
         try:
             if int(args[2]) > cpu_count():
-                print(args[2] + " cores were specified, but the computer only has "
+                print(args[2] + " cores were specified,"
+                      + " but the computer only has "
                       + str(cpu_count()) + ".\n"
-                      + "Maximum number of cores available will be used instead.")
+                      + "Maximum number of cores available"
+                      + " will be used instead.")
                 main(args[0], "./output.txt", cpu_count())
             else:
                 main(args[0], "./output.txt", int(args[2]))
         except:
-            print("Wrong arguments or path(s).\nUse './weight-spectrum.py help' to get help on script usage.")
+            print("Wrong arguments or path(s).\n"
+                  + "Use './weight-spectrum.py help'"
+                  + " to get help on script usage.")
     elif len(args) == 4 and args[2] == '-j':
         try:
             if int(args[3]) > cpu_count():
-                print(args[3] + " cores were specified, but the computer only has "
+                print(args[3] + " cores were specified,"
+                      + " but the computer only has "
                       + str(cpu_count()) + ".\n"
-                      + "Maximum number of cores available will be used instead.")
+                      + "Maximum number of cores available"
+                      + " will be used instead.")
                 main(args[0], args[1], cpu_count())
             else:
                 main(args[0], args[1], int(args[3]))
         except:
-            print("Wrong arguments or path(s).\nUse './weight-spectrum.py help' to get help on script usage.")
+            print("Wrong arguments or path(s).\n"
+                  + "Use './weight-spectrum.py help'"
+                  + " to get help on script usage.")
     else:
-        print("Wrong arguments or path(s).\nUse './weight-spectrum.py help' to get help on script usage.")
+        print("Wrong arguments or path(s).\n"
+              + "Use './weight-spectrum.py help'"
+              + " to get help on script usage.")
 
 
 # in_24_32.txt: 1 loop, best of 3: 20.2 s per loop (-18.5% vs Git/Habr)
