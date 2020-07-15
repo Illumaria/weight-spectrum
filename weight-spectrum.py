@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import sys
 from math import log2
 from multiprocessing import Process, Manager, cpu_count
@@ -186,22 +187,23 @@ def write(spectrum, path):
             fout.write("{}\t{}".format(i+1, spectrum[-1]))
 
             
-def print_help():
-    print("Usage:\n"
-          + "    $ ./weight-spectrum <input-file>"
-          + " [<output-file>] [<processes>]\n"
-          + "    $ ./weight-spectrum help\n\n"
-          + "Commands:\n"
-          + "  -  help             : print this help message"
-          + " and exit.\n\n"
-          + "Options and arguments:\n"
-          + "  -  <input-file>     : a path to the input text file.\n"
-          + "  -  [<output-file>]  : (optional) a path to the output"
-          + " text file;\nif not specified, \"./output.txt\""
-          + " will be used.\n"
-          + "  -  [-j <processes>] : (optional) number of cores to use"
-          + " for parallel computing;\nif not specified, maximum"
-          + " number of cores\nwill be used automatically.\n")
+def arg_parser():
+    parser = argparse.ArgumentParser(
+        description="Calculate linear subspace weight spectrum."
+        )
+    parser.add_argument("input", help="a path to the input text file")
+    parser.add_argument("-o", "--output", default="./output.txt",
+                        help="a path to the output"
+                        + " text file; if not specified,"
+                        " \"./output.txt\" will be used")
+    parser.add_argument("-j", "--parallel", type=int,
+                        choices=[i+1 for i in range(cpu_count())],
+                        default=cpu_count(),
+                        help="number of cores to use for parallel"
+                        + " computing; if not specified, maximum"
+                        + " number of cores will be used")
+    args = parser.parse_args()
+    return args
 
 
 def main(input_file, output_file, cores):
@@ -225,62 +227,8 @@ def main(input_file, output_file, cores):
 
 
 if __name__ == "__main__":
-    args = sys.argv[1:]
-    if len(args) == 0:
-        print("No arguments specified.\n"
-              + "Use './weight-spectrum.py help'"
-              + " to get help on script usage.")
-    elif len(args) == 1:
-        if (args[0] != 'help'):
-            try:
-                main(args[0], "./output.txt", cpu_count())
-            except:
-                print("Wrong path specified.\n"
-                      + "Use './weight-spectrum.py help'"
-                      + " to get help on script usage.")
-        else:
-            print_help()
-    elif len(args) == 2:
-        try:
-            main(args[0], "./output.txt", cpu_count())
-        except:
-            print("Wrong arguments or path(s).\n"
-                  + "Use './weight-spectrum.py help'"
-                  + " to get help on script usage.")
-    elif len(args) == 3 and args[1] == "-j":
-        try:
-            if int(args[2]) > cpu_count():
-                print(args[2] + " cores were specified,"
-                      + " but the computer only has "
-                      + str(cpu_count()) + ".\n"
-                      + "Maximum number of cores available"
-                      + " will be used instead.")
-                main(args[0], "./output.txt", cpu_count())
-            else:
-                main(args[0], "./output.txt", int(args[2]))
-        except:
-            print("Wrong arguments or path(s).\n"
-                  + "Use './weight-spectrum.py help'"
-                  + " to get help on script usage.")
-    elif len(args) == 4 and args[2] == '-j':
-        try:
-            if int(args[3]) > cpu_count():
-                print(args[3] + " cores were specified,"
-                      + " but the computer only has "
-                      + str(cpu_count()) + ".\n"
-                      + "Maximum number of cores available"
-                      + " will be used instead.")
-                main(args[0], args[1], cpu_count())
-            else:
-                main(args[0], args[1], int(args[3]))
-        except:
-            print("Wrong arguments or path(s).\n"
-                  + "Use './weight-spectrum.py help'"
-                  + " to get help on script usage.")
-    else:
-        print("Wrong arguments or path(s).\n"
-              + "Use './weight-spectrum.py help'"
-              + " to get help on script usage.")
+    args = arg_parser()
+    main(args.input, args.output, args.parallel)
 
 
 # in_24_32.txt: 1 loop, best of 3: 20.2 s per loop (-18.5% vs Git/Habr)
