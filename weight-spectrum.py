@@ -4,7 +4,6 @@ import argparse
 import sys
 from math import log2
 from multiprocessing import Process, Manager, cpu_count
-from tqdm import tqdm
 
 
 # Read the file as a list of integers (vectors)
@@ -101,7 +100,7 @@ def gray_code(index):
 
 
 # Get the spectrum of a basis
-def get_spectrum(basis, vector_len, bounds, total_spectrum, pbar=None):
+def get_spectrum(basis, vector_len, bounds, total_spectrum):
     spectrum = [0] * (vector_len + 1)
 
     # Calculate the first vector
@@ -124,11 +123,6 @@ def get_spectrum(basis, vector_len, bounds, total_spectrum, pbar=None):
         current_vector ^= basis[bit_change_pos]
         weight = count_ones(current_vector)
         spectrum[weight] += 1
-        # Update a progress bar
-        if pbar:
-            pbar.update()
-    if pbar:
-        pbar.close()
     
     # Append weights from each process
     # to the main list
@@ -145,28 +139,18 @@ def process(basis, rank, vector_len_wz, vector_len, vector_num, cores):
             spectrum.append(int(spectrum[i-1] * (rank-i+1) / i))
     else:
         if cores > 1:
-            print("\nUsing", cores, "cores for parallel computing.")
+            print("Using", cores, "cores for parallel computing.")
         else:
             print("Using 1 core for parallel computing.")
         parts = partition(0, 2**len(basis) - 1, cores)
         with Manager() as manager:
-            pbar = tqdm(total=parts[0][1])
             total_spectrum = manager.list()
             
-            processes = []
-            
-            processes.append(
-                Process(
-                    target=get_spectrum,
-                    args=(basis, vector_len, parts[0], total_spectrum, pbar)
-                    )
-                )
-            
-            processes[1:] = [
+            processes = [
                 Process(
                     target=get_spectrum,
                     args=(basis, vector_len, part, total_spectrum)
-                    ) for part in parts[1:]
+                    ) for part in parts
                 ]
             
             for p in processes:
