@@ -1,6 +1,8 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
+# -*- coding: UTF-8 -*-
 
 import argparse
+from pathlib import Path
 import sys
 from math import log2
 from multiprocessing import Process, Manager, cpu_count
@@ -212,7 +214,7 @@ def main(input_file, output_file, cores):
 
 if __name__ == "__main__":
     args = arg_parser()
-    main(args.input, args.output, args.parallel)
+    main(Path(args.input), Path(args.output), args.parallel)
 
 
 # in_24_32.txt: 1 loop, best of 3: 20.2 s per loop (-18.5% vs Git/Habr)
