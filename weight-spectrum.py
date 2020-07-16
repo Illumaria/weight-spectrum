@@ -8,8 +8,17 @@ from math import log2
 from multiprocessing import Process, Manager, cpu_count
 
 
-# Read the file as a list of integers (vectors)
 def read(path):
+    """Read a file
+    
+    Args:
+        path (str): Path to the file to open.
+        
+    Returns:
+        :rtype: (:obj:`list` of :obj:`int`, int, int): The list of
+            vectors read from file, their number and their length.
+    
+    """
     with open(path, "r", encoding='utf-8') as fin:
         vectors = [x.rstrip() for x in fin.readlines()]
         vector_len = len(vectors[0])
@@ -18,8 +27,18 @@ def read(path):
         return (vectors, vector_num, vector_len)
 
 
-# Get positions of zeros in a single vector
 def get_zeros_pos(vector):
+    """Get positions of zeros in a vector
+    
+    Args:
+        vector (:obj:`list` of :obj:`int`): The input vector.
+        
+    Returns:
+        :rtype: (:obj:`list` of :obj:`int`, int): The list of
+            zeros positions in the vector and the length of
+            the vector with all zeros removed.
+    
+    """
     zeros_pos = []
     vector_str = bin(vector)[2:]
     vector_len = len(vector_str)
@@ -78,21 +97,23 @@ def partition(start, end, cores):
     return parts
 
 
-# Count ones in a binary representation
-# of an integer number
 def count_ones(int_num):
-    # The code provided below does not invoke
-    # any type convertions and only performs
-    # as many cycles as there are '1' digits
-    # in a binary representation of a number
-
-    # count = 0
-    # while(int_num != 0):
-    #     int_num &= int_num - 1
-    #     count += 1
-    # return count
-
-    # However, this solution turns out to be faster
+    """Count ones in a binary representation of an integer number
+    
+    Args:
+        int_num (int): The integer number.
+        
+    Returns:
+        int: The number of ones in the binary representation
+            of the given number.
+    
+    Examples:
+        >>> print(count_ones(5))
+        2
+        >>> print(count_ones(11))
+        3
+    
+    """
     return bin(int_num).count('1')
 
 
