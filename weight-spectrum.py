@@ -10,14 +10,14 @@ from pathlib import Path
 
 def read(path):
     """Read a file
-    
+
     Args:
         path (str): Path to the file to read from.
-        
+
     Returns:
         :rtype: (:obj:`list` of :obj:`int`, int, int): The list of
             vectors read from file, their number and their length.
-    
+
     """
     with open(path, "r", encoding='utf-8') as fin:
         vectors = [x.rstrip() for x in fin.readlines()]
@@ -29,15 +29,15 @@ def read(path):
 
 def get_zeros_pos(vector):
     """Get positions of zeros in a vector
-    
+
     Args:
         vector (:obj:`list` of :obj:`int`): The input vector.
-        
+
     Returns:
         :rtype: (:obj:`list` of :obj:`int`, int): The list of
             zeros positions in the vector and the length of
             the vector with all zeros removed.
-    
+
     """
     zeros_pos = []
     vector_str = bin(vector)[2:]
@@ -49,49 +49,49 @@ def get_zeros_pos(vector):
 
 def delete(vector, zeros_pos):
     """Remove zeros at given indexes from a single vector
-    
+
     Args:
         vector (int): The ingeger value corresponding to the vector.
         zeros_pos (:obj:`list` of :obj:`int`): The list of
             zeros indexes in the vector, sorted in descending order.
-    
+
     Returns:
         int: The ingeger value corresponding to the vector
             arfer removing zeros at given positions
             from vector's binary representation.
-    
+
     Example:
         >>> print(delete(37, [3, 1]))
         11
-    
+
     """
     bin_vector = bin(vector)[2:]
     bin_len = len(bin_vector)
     for zero_pos in zeros_pos[::-1]:
         if zero_pos < bin_len:
             bin_vector = (bin_vector[:bin_len-zero_pos-1]
-                         + bin_vector[bin_len-zero_pos:])
+                          + bin_vector[bin_len-zero_pos:])
     vector = int(bin_vector, 2)
     return vector
 
 
 def delete_zeros(vectors, vector_len):
     """Delete common zeros from vectors
-    
+
     Args:
         vectors (:obj:`list` of :obj:`int`): The list of
             vectors.
         vector_len (int): The length of vectors.
-    
+
     Returns:
         :rtype: (:obj:`list` of :obj:`int`, int): The list of
             vectors with all common zeros removed and the new length
             of vectors.
-    
+
     Example:
         >>> print(delete_zeros([5, 4], 3))
         ([3, 2], 2)
-    
+
     """
     vec_sum = 0
     for vec in vectors:
@@ -103,17 +103,17 @@ def delete_zeros(vectors, vector_len):
 
 def get_basis(vectors, vector_num, vector_len):
     """Get vectors basis
-    
+
     Args:
         vectors (:obj:`list` of :obj:`int`): The list of
             vectors.
         vector_num (int): The number of vectors in the list.
         vector_len (int): The length of vectors in the list.
-    
+
     Returns:
         :rtype: (:obj:`list` of :obj:`int`, int): The list of
             basis vectors and the rank of the basis.
-        
+
     """
     # Initial rank equals to the current full rank
     rank = min(vector_len, vector_num)
@@ -133,23 +133,23 @@ def get_basis(vectors, vector_num, vector_len):
 
 def partition(start, end, cores):
     """Split a range into (exactly or almost) parts
-    
+
     Args:
         start (int): The first index of the range.
         end (int): The last index of the range.
         cores (int): The number of parts to split into.
-        
+
     Returns:
         :obj:`list` of :obj:`list` of :obj:`int`: The list of
             lists, where each inner list contains starting and
             ending index of a single part.
-            
+
     Examples:
         >>> print(0, 100, 3)
         [[0, 33], [34, 67], [68, 100]]
         >>> print(10, 49, 4)
         [[10, 19], [20, 29], [30, 39], [40, 49]]
-    
+
     """
     dn = round((end - start + 1) / cores)
     parts = []
@@ -161,47 +161,47 @@ def partition(start, end, cores):
 
 def count_ones(int_num):
     """Count ones in a binary representation of an integer number
-    
+
     Args:
         int_num (int): The integer number.
-        
+
     Returns:
         int: The number of ones in the binary representation
             of the given number.
-    
+
     Examples:
         >>> print(count_ones(5))
         2
         >>> print(count_ones(11))
         3
-    
+
     """
     return bin(int_num).count('1')
 
 
 def gray_code(index):
     """Get the Gray code equivalent of the given integer number
-    
+
     Args:
         index (int): The integer number.
-    
+
     Returns:
         int: The integer number whose binary representation
             corresponds to Gray code of the index.
-    
+
     Examples:
         >>> print(gray_code(5))
         7
         >>> print(gray_code(11))
         14
-    
+
     """
     return index ^ (index // 2)
 
 
 def get_spectrum(basis, vector_len, bounds, total_spectrum):
     """Get the spectrum of a basis
-    
+
     Args:
         basis (:obj:`list` of :obj:`int`): The list of
             basis vectors.
@@ -212,7 +212,7 @@ def get_spectrum(basis, vector_len, bounds, total_spectrum):
         total_spectrum (:obj:`list` of :obj:`list` of :obj:`int`):
             The list of lists where a single inner list
             contains spectrum for a single specific range.
-        
+
     """
     spectrum = [0] * (vector_len + 1)
 
@@ -236,7 +236,7 @@ def get_spectrum(basis, vector_len, bounds, total_spectrum):
         current_vector ^= basis[bit_change_pos]
         weight = count_ones(current_vector)
         spectrum[weight] += 1
-    
+
     # Append weights from each process
     # to the main list
     total_spectrum.append(spectrum)
@@ -244,7 +244,7 @@ def get_spectrum(basis, vector_len, bounds, total_spectrum):
 
 def process(basis, rank, vector_len_wz, vector_len, vector_num, cores):
     """The main process of the script for spectrum calculation
-    
+
     Args:
         basis (:obj:`list` of :obj:`int`): The list of basis vectors.
         rank (int): The rank of the basis.
@@ -253,11 +253,11 @@ def process(basis, rank, vector_len_wz, vector_len, vector_num, cores):
         vector_len (int): The starting basis vectors length.
         vector_num (int): The number of vectors in the basis.
         cores (int): The number of parallel processes to run.
-    
+
     Returns:
         spectrum (:obj:`list` of :obj:`int`): The list of
             weights of the basis vectors.
-    
+
     """
     spectrum = []
     if rank == vector_len_wz:
@@ -272,14 +272,14 @@ def process(basis, rank, vector_len_wz, vector_len, vector_num, cores):
         parts = partition(0, 2**len(basis) - 1, cores)
         with Manager() as manager:
             total_spectrum = manager.list()
-            
+
             processes = [
                 Process(
                     target=get_spectrum,
                     args=(basis, vector_len, part, total_spectrum)
                     ) for part in parts
                 ]
-            
+
             for p in processes:
                 p.start()
             for p in processes:
@@ -291,16 +291,16 @@ def process(basis, rank, vector_len_wz, vector_len, vector_num, cores):
 
 def write(spectrum, path):
     """Write spectrum to a file
-    
+
     Args:
         spectrum (:obj:`list` of :obj:`int`): The list of
             weights of the basis vectors.
         path (str): Path to the file to write to.
-        
+
     Returns:
         :rtype: (:obj:`list` of :obj:`int`, int, int): The list of
             vectors read from file, their number and their length.
-    
+
     """
     with open(path, "w", encoding='utf-8') as fout:
         for i, elem in enumerate(spectrum[:-1]):
@@ -308,13 +308,13 @@ def write(spectrum, path):
         else:
             fout.write("{}\t{}".format(i+1, spectrum[-1]))
 
-            
+
 def arg_parser():
     """The function to fill command line arguments and parse them"""
     parser = argparse.ArgumentParser(
         description="Calculate linear subspace weight spectrum."
         )
-    
+
     parser.add_argument("input", help="a path to the input text file")
     parser.add_argument("-o", "--output", default="./output.txt",
                         help="a path to the output"
@@ -326,34 +326,34 @@ def arg_parser():
                         help="number of cores to use for parallel"
                         + " computing; if not specified, maximum"
                         + " number of cores will be used")
-    
+
     args = parser.parse_args()
     return args
 
 
 def main(input_file, output_file, cores):
     """The main function of the script
-    
+
     Args:
         input_file (str): The path to the input file.
         output_file (str): The path to the output file.
         cores (int): The number of parallel processes to run.
-    
+
     """
     # Read vectors from the file and get their number and length
     vectors, vector_num, vector_len = read(input_file)
-    
+
     # Delete zeros and get the new
     # vector length (without zeros)
     vectors, vector_len_wz = delete_zeros(vectors, vector_len)
-    
+
     # Find basis and rank of vectors matrix
     basis, rank = get_basis(vectors, vector_num, vector_len_wz)
-    
+
     # Calculate spectrum
     spectrum = process(basis, rank, vector_len_wz,
                        vector_len, vector_num, cores)
-    
+
     # Write spectrum to the file
     print("Writing output to {}...".format(output_file))
     write(spectrum, output_file)
@@ -363,4 +363,3 @@ def main(input_file, output_file, cores):
 if __name__ == "__main__":
     args = arg_parser()
     main(Path(args.input), Path(args.output), args.parallel)
-
