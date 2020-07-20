@@ -54,10 +54,12 @@ def delete(vector, zeros_pos):
         vector (int): The ingeger value corresponding to the vector.
         zeros_pos (:obj:`list` of :obj:`int`): The list of
             zeros indexes in the vector, sorted in descending order.
+    
     Returns:
         int: The ingeger value corresponding to the vector
             arfer removing zeros at given positions
             from vector's binary representation.
+    
     Example:
         >>> print(delete(37, [3, 1]))
         11
@@ -73,8 +75,24 @@ def delete(vector, zeros_pos):
     return vector
 
 
-# Delete common zeros from vectors
 def delete_zeros(vectors, vector_len):
+    """Delete common zeros from vectors
+    
+    Args:
+        vectors (:obj:`list` of :obj:`int`): The list of
+            vectors.
+        vector_len (int): The length of vectors.
+    
+    Returns:
+        :rtype: (:obj:`list` of :obj:`int`, int): The list of
+            vectors with all common zeros removed and the new length
+            of vectors.
+    
+    Example:
+        >>> print(delete_zeros([5, 4], 3))
+        ([3, 2], 2)
+    
+    """
     vec_sum = 0
     for vec in vectors:
         vec_sum |= vec
@@ -83,8 +101,20 @@ def delete_zeros(vectors, vector_len):
     return (vectors, new_vector_len)
 
 
-# Get basis of vectors
 def get_basis(vectors, vector_num, vector_len):
+    """Get vectors basis
+    
+    Args:
+        vectors (:obj:`list` of :obj:`int`): The list of
+            vectors.
+        vector_num (int): The number of vectors in the list.
+        vector_len (int): The length of vectors in the list.
+    
+    Returns:
+        :rtype: (:obj:`list` of :obj:`int`, int): The list of
+            basis vectors and the rank of the basis.
+        
+    """
     # Initial rank equals to the current full rank
     rank = min(vector_len, vector_num)
 
@@ -101,13 +131,31 @@ def get_basis(vectors, vector_num, vector_len):
     return (basis, rank)
 
 
-# Split a range into (exactly or almost) equal parts
 def partition(start, end, cores):
+    """Split a range into (exactly or almost) parts
+    
+    Args:
+        start (int): The first index of the range.
+        end (int): The last index of the range.
+        cores (int): The number of parts to split into.
+        
+    Returns:
+        :obj:`list` of :obj:`list` of :obj:`int`: The list of
+            lists, where each inner list contains starting and
+            ending index of a single part.
+            
+    Examples:
+        >>> print(0, 100, 3)
+        [[0, 33], [34, 67], [68, 100]]
+        >>> print(10, 49, 4)
+        [[10, 19], [20, 29], [30, 39], [40, 49]]
+    
+    """
     dn = round((end - start + 1) / cores)
     parts = []
     parts += [[start, start + dn - 1]]
-    parts += [[dn * (i - 1), i * dn - 1] for i in range(2, cores)]
-    parts += [[(cores - 1) * dn, end]]
+    parts += [[start + dn*(i-1), start + i*dn - 1] for i in range(2, cores)]
+    parts += [[start + (cores-1)*dn, end]]
     return parts
 
 
@@ -151,8 +199,21 @@ def gray_code(index):
     return index ^ (index // 2)
 
 
-# Get the spectrum of a basis
 def get_spectrum(basis, vector_len, bounds, total_spectrum):
+    """Get the spectrum of a basis
+    
+    Args:
+        basis (:obj:`list` of :obj:`int`): The list of
+            basis vectors.
+        vector_len (int): The length of basis vectors.
+        bounds (:obj:`list` of :obj:`int`): The list of
+            starting and ending positions of the range
+            to calculate spectrum for.
+        total_spectrum (:obj:`list` of :obj:`list` of :obj:`int`):
+            The list of lists where a single inner list
+            contains spectrum for a single specific range.
+        
+    """
     spectrum = [0] * (vector_len + 1)
 
     # Calculate the first vector
