@@ -2,17 +2,17 @@
 # -*- coding: UTF-8 -*-
 
 import argparse
-from pathlib import Path
 import sys
 from math import log2
 from multiprocessing import Process, Manager, cpu_count
+from pathlib import Path
 
 
 def read(path):
     """Read a file
     
     Args:
-        path (str): Path to the file to open.
+        path (str): Path to the file to read from.
         
     Returns:
         :rtype: (:obj:`list` of :obj:`int`, int, int): The list of
@@ -47,8 +47,22 @@ def get_zeros_pos(vector):
     return (zeros_pos, new_vector_len)
 
 
-# Delete zeros at given indexes from a single vector
 def delete(vector, zeros_pos):
+    """Remove zeros at given indexes from a single vector
+    
+    Args:
+        vector (int): The ingeger value corresponding to the vector.
+        zeros_pos (:obj:`list` of :obj:`int`): The list of
+            zeros indexes in the vector, sorted in descending order.
+    Returns:
+        int: The ingeger value corresponding to the vector
+            arfer removing zeros at given positions
+            from vector's binary representation.
+    Example:
+        >>> print(delete(37, [3, 1]))
+        11
+    
+    """
     bin_vector = bin(vector)[2:]
     bin_len = len(bin_vector)
     for zero_pos in zeros_pos[::-1]:
@@ -117,8 +131,23 @@ def count_ones(int_num):
     return bin(int_num).count('1')
 
 
-# Get the Gray code of a given index
 def gray_code(index):
+    """Get the Gray code equivalent of the given integer number
+    
+    Args:
+        index (int): The integer number.
+    
+    Returns:
+        int: The integer number whose binary representation
+            corresponds to Gray code of the index.
+    
+    Examples:
+        >>> print(gray_code(5))
+        7
+        >>> print(gray_code(11))
+        14
+    
+    """
     return index ^ (index // 2)
 
 
@@ -152,9 +181,23 @@ def get_spectrum(basis, vector_len, bounds, total_spectrum):
     total_spectrum.append(spectrum)
 
 
-# The main process of the script
-# for calculating spectrum
 def process(basis, rank, vector_len_wz, vector_len, vector_num, cores):
+    """The main process of the script for spectrum calculation
+    
+    Args:
+        basis (:obj:`list` of :obj:`int`): The list of basis vectors.
+        rank (int): The rank of the basis.
+        vector_len_wz (int): The length of basis vectors after removing
+            redundant zeros.
+        vector_len (int): The starting basis vectors length.
+        vector_num (int): The number of vectors in the basis.
+        cores (int): The number of parallel processes to run.
+    
+    Returns:
+        spectrum (:obj:`list` of :obj:`int`): The list of
+            weights of the basis vectors.
+    
+    """
     spectrum = []
     if rank == vector_len_wz:
         spectrum = [1]
@@ -185,8 +228,19 @@ def process(basis, rank, vector_len_wz, vector_len, vector_num, cores):
     return spectrum
 
 
-# Write spectrum to the file
 def write(spectrum, path):
+    """Write spectrum to a file
+    
+    Args:
+        spectrum (:obj:`list` of :obj:`int`): The list of
+            weights of the basis vectors.
+        path (str): Path to the file to write to.
+        
+    Returns:
+        :rtype: (:obj:`list` of :obj:`int`, int, int): The list of
+            vectors read from file, their number and their length.
+    
+    """
     with open(path, "w", encoding='utf-8') as fout:
         for i, elem in enumerate(spectrum[:-1]):
             fout.write("{}\t{}\n".format(i, elem))
@@ -195,9 +249,11 @@ def write(spectrum, path):
 
             
 def arg_parser():
+    """The function to fill command line arguments and parse them"""
     parser = argparse.ArgumentParser(
         description="Calculate linear subspace weight spectrum."
         )
+    
     parser.add_argument("input", help="a path to the input text file")
     parser.add_argument("-o", "--output", default="./output.txt",
                         help="a path to the output"
@@ -209,11 +265,21 @@ def arg_parser():
                         help="number of cores to use for parallel"
                         + " computing; if not specified, maximum"
                         + " number of cores will be used")
+    
     args = parser.parse_args()
     return args
 
 
 def main(input_file, output_file, cores):
+    """The main function of the script
+    
+    Args:
+        input_file (str): The path to the input file.
+        output_file (str): The path to the output file.
+        cores (int): The number of parallel processes to run.
+    
+    """
+    # Read vectors from the file and get their number and length
     vectors, vector_num, vector_len = read(input_file)
     
     # Delete zeros and get the new
@@ -237,6 +303,3 @@ if __name__ == "__main__":
     args = arg_parser()
     main(Path(args.input), Path(args.output), args.parallel)
 
-
-# in_24_32.txt: 1 loop, best of 3: 20.2 s per loop (-18.5% vs Git/Habr)
-# in_31_32.txt: 1233.2595570087433 seconds         (-15.7% vs Git/Habr)
